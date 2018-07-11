@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Recast</string>
+    <string name="type_text">text</string>
+    <string name="enter_message">Enter message</string>
+    <string name="typing">...</string>
+     <string name="quickReplies">quickReplies</string>
+    <string name="card">card</string>
+    <string name="buttons">buttons</string>
+    <string name="bot">bot</string>
+    <string name="other">Other</string>
+</resources>
