@@ -13,17 +13,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.google.gson.Gson
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.botresp_message.view.*
 import kotlinx.android.synthetic.main.item_message_received.view.*
 import kotlinx.android.synthetic.main.item_message_sent.view.*
 import kotlinx.android.synthetic.main.typingindicator.view.*
+import org.greenrobot.eventbus.EventBus
 import phani.recast.com.R
 import phani.recast.com.adapters.ChatAdapter.Companion.TAG
 import phani.recast.com.adapters.ChatAdapter.Companion.typinganim
-import phani.recast.com.modal.Button
-import phani.recast.com.modal.ChatMessageModal
-import phani.recast.com.modal.Content
-import phani.recast.com.modal.QuickReply
+import phani.recast.com.modal.*
 
 
 class ChatAdapter(val chatmessages: ArrayList<ChatMessageModal>) : Adapter<RecyclerView.ViewHolder>() {
@@ -45,7 +44,6 @@ class ChatAdapter(val chatmessages: ArrayList<ChatMessageModal>) : Adapter<Recyc
                 viewHolder = ReceivedMessageHolder(view)
             }
             MESSAGESENTVALUE -> {
-
                 view = LayoutInflater.from(parent.context).inflate(R.layout.item_message_sent, parent, false)
                 viewHolder = SentMessageHolder(view)
             }
@@ -67,6 +65,9 @@ class ChatAdapter(val chatmessages: ArrayList<ChatMessageModal>) : Adapter<Recyc
             ChatMessageModal.Type.SENT -> MESSAGESENTVALUE
             ChatMessageModal.Type.RECEIVED -> MESSAGERECEIVEVALUE
             ChatMessageModal.Type.TYPING -> TYPINGVALUE
+
+
+            null -> TODO()
         }
 
 
@@ -95,14 +96,39 @@ class ReceivedMessageHolder(itemView: View?) : RecyclerView.ViewHolder(itemView)
         Log.d(TAG, "Message Type : ${chatMessageModal.type}")
         when (chatMessageModal.type) {
             itemView.context.getString(R.string.type_text) -> {
+                itemView.layout_generalresponse.visibility = View.VISIBLE
+                itemView.quickreply_layout.visibility = View.GONE
+                itemView.layout_picture.visibility = View.GONE
+                itemView.list_layout.visibility = View.GONE
+
                 itemView.receive_body.text = chatMessageModal.message.toString()
                 itemView.receive_time.text = chatMessageModal.getFormattedTime()
                 Log.d("ReceivedMessageHolder", "text :${chatMessageModal.type} ")
 
             }
+            itemView.context.getString(R.string.picture) -> {
+                itemView.layout_generalresponse.visibility = View.GONE
+                itemView.quickreply_layout.visibility = View.GONE
+                itemView.layout_picture.visibility = View.VISIBLE
+                itemView.list_layout.visibility = View.GONE
+
+                itemView.receivemainlayout.layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT
+                Picasso.get()
+                        .load(chatMessageModal.message.toString())
+                        .placeholder(R.drawable.ic_launcher_foreground)
+                        .error(R.drawable.ic_launcher_foreground)
+                        .into(itemView.receive_thumbnail)
+                itemView.receive_thumbnail.setOnClickListener {
+                    EventBus.getDefault().post(EventBusMessage(itemView.context.getString(R.string.gotoshopdetails)))
+
+                }
+
+            }
             itemView.context.getString(R.string.quickReplies) -> {
                 itemView.layout_generalresponse.visibility = View.GONE
                 itemView.quickreply_layout.visibility = View.VISIBLE
+                itemView.layout_picture.visibility = View.GONE
+                itemView.list_layout.visibility = View.GONE
 
                 var quickreplyList: ArrayList<QuickReply> = arrayListOf()
                 val str = Gson().toJson(chatMessageModal.message)
@@ -116,9 +142,29 @@ class ReceivedMessageHolder(itemView: View?) : RecyclerView.ViewHolder(itemView)
                 itemView.child_bot_recv.hasFixedSize()
                 itemView.child_bot_recv.layoutManager = LinearLayoutManager(itemView.context, LinearLayout.HORIZONTAL, false)
                 itemView.child_bot_recv.adapter = q
+            }
+            itemView.context.getString(R.string.list) -> {
+                itemView.layout_generalresponse.visibility = View.GONE
+                itemView.quickreply_layout.visibility = View.GONE
+                itemView.layout_picture.visibility = View.GONE
+                itemView.list_layout.visibility = View.VISIBLE
 
 
+                var listreplyList: ArrayList<Element> = arrayListOf()
+                val str = Gson().toJson(chatMessageModal.message)
+                val content: Content? = Gson().fromJson(str, Content::class.java)
+                Log.d(TAG, "Gson listReply Value: ${Gson().toJson(chatMessageModal.message)}")
+                listreplyList = content?.elements!!
+                if (listreplyList.size > 0) {
+                    val q = ListTypeReplyAdapter(listreplyList)
+                    itemView.child_bot_recv_listlayout.hasFixedSize()
+                    itemView.child_bot_recv_listlayout.layoutManager = LinearLayoutManager(itemView.context, LinearLayout.VERTICAL, false)
+                    itemView.child_bot_recv_listlayout.adapter = q
 
+                }
+
+            }
+            else -> {
 
 
             }
@@ -145,10 +191,10 @@ class TypingIndicatorHolder(itemView: View?) : RecyclerView.ViewHolder(itemView)
         itemView.typingindicator.visibility = View.VISIBLE
 
         typinganim = ObjectAnimator.ofInt(itemView.typingindicator, "textColor", Color.BLACK, Color.TRANSPARENT)
-        typinganim?.setDuration(1000)
+        typinganim?.duration = 1000
         typinganim?.setEvaluator(ArgbEvaluator())
-        typinganim?.setRepeatCount(ValueAnimator.INFINITE)
-        typinganim?.setRepeatMode(ValueAnimator.REVERSE)
+        typinganim?.repeatCount = ValueAnimator.INFINITE
+        typinganim?.repeatMode = ValueAnimator.REVERSE
         typinganim?.start()
     }
 

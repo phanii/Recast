@@ -1,11 +1,25 @@
 <resources>
-    <string name="app_name">Recast</string>
+    <string name="app_name">Retail Bot</string>
     <string name="type_text">text</string>
-    <string name="enter_message">Enter message</string>
+    <string name="enter_message">Ask bot</string>
     <string name="typing">...</string>
-     <string name="quickReplies">quickReplies</string>
+    <string name="quickReplies">quickReplies</string>
+    <string name="picture">picture</string>
     <string name="card">card</string>
     <string name="buttons">buttons</string>
     <string name="bot">bot</string>
     <string name="other">Other</string>
+    <string name="saysomething">Say Something</string>
+    <string name="speachnotsupported">Speach Not supported</string>
+    <string name="gotoshopdetails">shopdetails</string>
+    <string name="product_details">Product Details</string>
+    <string name="defaultdesp">Et sumo mutat est, ea duis erat singulis cum, et esse ignota philosophia nec. Eu splendide similique mei. Vel ut dicunt denique, est et viderer persius, mea nominati sapientem ocurreret te. Errem iudico fastidii te cum. Fugit ancillae noluisse nec in, ea quodsi invidunt probatus vel.Et sumo mutat est, ea duis erat singulis cum, et esse ignota philosophia nec. Eu splendide similique mei. Vel ut dicunt denique, est et viderer persius, mea nominati sapientem ocurreret te. Errem iudico fastidii te cum. Fugit ancillae noluisse nec in, ea quodsi invidunt probatus vel.Et sumo mutat est, ea duis erat singulis cum, et esse ignota philosophia nec. Eu splendide similique mei. Vel ut dicunt denique, est et viderer persius, mea nominati sapientem ocurreret te. Errem iudico fastidii te cum. Fugit ancillae noluisse nec in, ea quodsi invidunt probatus vel.Et sumo mutat est, ea duis erat singulis cum, et esse ignota philosophia nec. Eu splendide similique mei. Vel ut dicunt denique, est et viderer persius, mea nominati sapientem ocurreret te. Errem iudico fastidii te cum. Fugit ancillae noluisse nec in, ea quodsi invidunt probatus vel.Et sumo mutat est, ea duis erat singulis cum, et esse ignota philosophia nec. Eu splendide similique mei. Vel ut dicunt denique, est et viderer persius, mea nominati sapientem ocurreret te. Errem iudico fastidii te cum. Fugit ancillae noluisse nec in, ea quodsi invidunt probatus vel.Et sumo mutat est, ea duis erat singulis cum, et esse ignota philosophia nec. Eu splendide similique mei. Vel ut dicunt denique, est et viderer persius, mea nominati sapientem ocurreret te. Errem iudico fastidii te cum. Fugit ancillae noluisse nec in, ea quodsi invidunt probatus vel.Et sumo mutat est, ea duis erat singulis cum, et esse ignota philosophia nec. Eu splendide similique mei. Vel ut dicunt denique, est et viderer persius, mea nominati sapientem ocurreret te. Errem iudico fastidii te cum. Fugit ancillae noluisse nec in, ea quodsi invidunt probatus vel.</string>
+    <string name="list">list</string>
+    <string-array name="edits_array_1">
+        <item>What is your favorite color?</item>
+        <item>When is your dad\'s birthday?</item>
+        <item>When was your first date?</item>
+        <item>Who was your childhood hero?</item>
+        <item>What is GF/BF\'s nickname?</item>
+    </string-array>
 </resources>
