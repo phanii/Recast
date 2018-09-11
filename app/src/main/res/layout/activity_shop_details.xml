@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
-            app:contentScrim="?attr/colorPrimary"
+            app:contentScrim="?android:attr/colorPrimary"
             app:expandedTitleMarginStart="@dimen/activity_margin_content"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
@@ -39,7 +39,7 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/anim_toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
+                android:layout_height="?android:attr/actionBarSize"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
@@ -71,9 +71,10 @@
         android:layout_margin="@dimen/fab_margin"
         android:clickable="true"
         android:focusable="true"
-        android:src="@drawable/heartoutline"
-        app:backgroundTint="#8e98d3"
+        android:id="@+id/fab_navigate"
+        android:src="@drawable/baseline_navigation_white_24dp"
         app:fabSize="normal"
+        app:backgroundTint="@color/blue"
         app:layout_anchor="@+id/appbar"
         app:layout_anchorGravity="bottom|right|end" />
 

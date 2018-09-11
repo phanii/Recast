@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/dp10"
     app:cardCornerRadius="12dp"
+    android:elevation="8dp"
     app:cardElevation="6dp">
 
     <android.support.constraint.ConstraintLayout
@@ -79,5 +80,25 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+        <Button
+            android:id="@+id/navigate"
+            style="@style/Widget.AppCompat.Button.Small"
+            android:layout_width="wrap_content"
+
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+
+            android:layout_marginStart="8dp"
+            android:backgroundTint="@color/blue"
+            android:drawablePadding="@dimen/dp10"
+            android:drawableStart="@android:drawable/ic_menu_directions"
+            android:text="@string/navigate"
+            android:textAllCaps="true"
+            android:textColor="@color/white_lite"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/listlayout_row_viewstore" />
     </android.support.constraint.ConstraintLayout>
+
 </android.support.v7.widget.CardView>

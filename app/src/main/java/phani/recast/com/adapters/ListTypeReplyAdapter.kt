@@ -11,6 +11,7 @@ import org.greenrobot.eventbus.EventBus
 import phani.recast.com.R
 import phani.recast.com.modal.Element
 import phani.recast.com.modal.EventBusMessage
+import phani.recast.com.modal.EventNavigate
 
 class ListTypeReplyAdapter(var elemlist: ArrayList<Element>) : RecyclerView.Adapter<ListTypeReplyAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -28,6 +29,9 @@ class ListTypeReplyAdapter(var elemlist: ArrayList<Element>) : RecyclerView.Adap
         holder.itemView.listlayout_row_viewstore.setOnClickListener {
             Log.d("ListTypeReplyAdapter", ": ${element.title}")
             EventBus.getDefault().post(EventBusMessage(holder.itemView.context.getString(R.string.gotoshopdetails)))
+        }
+        holder.itemView.navigate.setOnClickListener {
+            EventBus.getDefault().post(EventNavigate(true, element.title!!))
         }
     }
 

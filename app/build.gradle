@@ -24,8 +24,8 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     //noinspection GradleCompatible
     implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation 'com.android.support:animated-vector-drawable:27.1.1'
     implementation 'com.android.support:design:27.1.1'
+    implementation 'com.android.support:animated-vector-drawable:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
@@ -48,6 +48,20 @@ dependencies {
     implementation 'com.google.android.gms:play-services-wearable:15.0.1'
     wearApp project(':recastwear')
     implementation 'com.reginald:editspinner:1.0.0'
+    implementation('com.indoorway.android:common:2.0.25')
+
+// optional if you don't want to use map view
+    implementation('com.indoorway.android:map:2.0.25')
+
+// optional if you don't want to use indoor positioning
+    implementation('com.indoorway.android:location:2.0.25')
+
+// optional if you don't want to use qr codes
+    implementation('com.indoorway.android:qrcode:2.0.25')
+
+// optional if you don't want to use fragments
+    implementation('com.indoorway.android:fragments:2.0.25')
+    implementation 'com.pixplicity.easyprefs:library:1.9.0'
 }
 repositories {
     mavenCentral()

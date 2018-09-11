@@ -11,12 +11,16 @@ import android.util.Log
 import android.widget.LinearLayout
 import android.widget.Toast
 import com.google.gson.Gson
+import com.indoorway.android.common.sdk.IndoorwaySdk
+import com.indoorway.android.common.sdk.listeners.generic.Action1
+import com.pixplicity.easyprefs.library.Prefs
 import kotlinx.android.synthetic.main.activity_chat_screen.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import phani.recast.com.adapters.ChatAdapter
 import phani.recast.com.modal.*
+import phani.recast.com.views.NavigationHome
 import phani.recast.com.webservices.ApiBuilder
 import phani.recast.com.webservices.Utilities
 import retrofit2.Call
@@ -79,6 +83,20 @@ class ChatScreen : AppCompatActivity() {
                 loadView(edittext_chatbox.text.toString())
             }
         }
+        IndoorwaySdk.instance()
+                .buildings()
+                .setOnCompletedListener(Action1 {
+                    Log.d(TAG, "Building List: ${Gson().toJson(it)}")
+                    Prefs.putString("street", it[0].street)
+                    Prefs.putString("mapname", it[0].maps[0].name)
+                    Prefs.putString("buildingUUID", it[0].uuid)
+                    Prefs.putString("mapUUID", it[0].maps[0].uuid)
+                    // handle buildings list
+                })
+                .setOnFailedListener(Action1 {
+                    // handle error, original exception is given on e.getCause()
+                })
+                .execute()
 
     }
 
@@ -149,7 +167,7 @@ class ChatScreen : AppCompatActivity() {
                 } else {
                     Log.d(TAG, "onResponse Error: ")
                 }
-                reyclerview_message_list.scrollToPosition(adapter.itemCount - 1)
+                // reyclerview_message_list.scrollToPosition(adapter.itemCount - 1)
             }
 
         })
@@ -172,6 +190,12 @@ class ChatScreen : AppCompatActivity() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun openShopDetails(eventBusMessage: EventBusMessage) {
         startActivity(Intent(this, ShopDetails::class.java))
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun openNavigationStoreMap(eventNavigate: EventNavigate) {
+        Log.d(TAG, "EventNavigate: ${eventNavigate.navigate} Store Name ${eventNavigate.navigateToShowRoomName}")
+        startActivity(Intent(this, NavigationHome::class.java))
     }
 
     private fun openMic() {

@@ -11,6 +11,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
+        android:name=".CustomeApplication"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
 
@@ -30,6 +31,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".ShopDetails" />
+        <activity
+            android:name=".views.NavigationHome"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
