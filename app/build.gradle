@@ -46,21 +46,21 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.android.support:palette-v7:27.1.1'
     implementation 'com.google.android.gms:play-services-wearable:15.0.1'
-    wearApp project(':recastwear')
+
     implementation 'com.reginald:editspinner:1.0.0'
-    implementation('com.indoorway.android:common:2.0.25')
+    implementation 'com.indoorway.android:common:2.0.25'
 
 // optional if you don't want to use map view
-    implementation('com.indoorway.android:map:2.0.25')
+    implementation 'com.indoorway.android:map:2.0.25'
 
 // optional if you don't want to use indoor positioning
-    implementation('com.indoorway.android:location:2.0.25')
+    implementation 'com.indoorway.android:location:2.0.25'
 
 // optional if you don't want to use qr codes
-    implementation('com.indoorway.android:qrcode:2.0.25')
+    implementation 'com.indoorway.android:qrcode:2.0.25'
 
 // optional if you don't want to use fragments
-    implementation('com.indoorway.android:fragments:2.0.25')
+    implementation 'com.indoorway.android:fragments:2.0.25'
     implementation 'com.pixplicity.easyprefs:library:1.9.0'
 }
 repositories {
