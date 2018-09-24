@@ -15,11 +15,11 @@ import com.indoorway.android.location.sdk.model.IndoorwayLocationSdkError
 import com.indoorway.android.location.sdk.model.IndoorwayLocationSdkState
 import com.indoorway.android.map.sdk.listeners.OnRoomSelectedListener
 import com.indoorway.android.map.sdk.view.camera.ScaleFactorType
-import com.indoorway.android.map.sdk.view.drawable.figures.DrawableText
 import com.pixplicity.easyprefs.library.Prefs
 import kotlinx.android.synthetic.main.fabmenu.*
 import kotlinx.android.synthetic.main.navigation_home.*
 import phani.recast.com.R
+import phani.recast.com.views.fragments.Object_Selection_fragment
 
 class NavigationHome : AppCompatActivity(), MapFragment.OnMapFragmentReadyListener {
     override fun onMapFragmentReady(fragment: MapFragment) {
@@ -50,6 +50,8 @@ class NavigationHome : AppCompatActivity(), MapFragment.OnMapFragmentReadyListen
     var mapUUID: String = "C4etnWJBuEg"
     var paths: List<IndoorwayNode>? = null
     var ref_fragment: MapFragment? = null
+
+    var objectIdList: ArrayList<String>? = ArrayList()
     lateinit var indoorLocationlistener: Action1<IndoorwayLocationSdkState>
     lateinit var error_listener: Action1<IndoorwayLocationSdkError>
     lateinit var indoorwayPositionlistener: Action1<IndoorwayPosition>
@@ -69,32 +71,72 @@ class NavigationHome : AppCompatActivity(), MapFragment.OnMapFragmentReadyListen
                 return "inaccessible" != room.type
             }
 
-
             override fun onRoomSelected(room: IndoorwayObjectParameters) {
+
                 // called on room selection, check parameters for details
                 if (fabExpanded) {
                     closeSubMenusFab()
                 }
+
+
                 Log.d(TAG, "room id: ${room.id}")//C4etnWJBuEg_6bb4a   C4etnWJBuEg_b9ab8
                 Log.d(TAG, "onRoomSelected details:${Gson().toJson(room)} ")
+
+                Log.d(TAG, "obj list : ${objectIdList?.size} ")
+                try {
+                    if (objectIdList?.size!! == 2) {
+                        Log.d(TAG, "objectidlist size is more than 2:${objectIdList!!.size} ")
+                        objectIdList?.clear()
+                        ref_fragment?.mapView?.navigation?.stop()
+                        objectIdList?.add(room.id)
+                    } else {
+                        if (objectIdList!!.size < 2) {
+                            objectIdList?.add(room.id)
+                            when {
+                                objectIdList?.size == 2 -> {
+                                    ref_fragment?.mapView?.navigation?.start(objectIdList!![0], objectIdList!![1])
+                                    Prefs.putString("recentLocation", room.name)
+                                }
+                                objectIdList!!.size > 2 -> {
+                                    Log.d(TAG, "else condition: ${objectIdList!!.size}")
+                                    objectIdList?.clear()
+                                    ref_fragment?.mapView?.navigation?.stop()
+                                }
+                                else -> {
+                                    //Toast.makeText(this@NavigationHome, "Uable to find a path!!", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(this@NavigationHome, "Uable to find a path!!", Toast.LENGTH_SHORT).show()
+                }
+
+
                 val myLayer = ref_fragment?.mapView?.marker?.addLayer(7f)
-                myLayer!!.add(
-                        DrawableText(
-                                room.id,
-                                Coordinates(room.centerPoint.latitude, room.centerPoint.longitude),
-                                room.name!!,
-                                6f    // eg. 2f
-                        )
-                )
+                /*   myLayer!!.add(
+                           DrawableText(
+                                   room.id,
+                                   Coordinates(room.centerPoint.latitude, room.centerPoint.longitude),
+                                   room.name!!,
+                                   6f    // eg. 2f
+                           )
+                   )*/
+
             }
 
             override fun onSelectionCleared() {
                 // called when no room is selected
+                Log.d(TAG, ": noroom selected")
+                Toast.makeText(this@NavigationHome, "No Path was found from this place!!", Toast.LENGTH_SHORT).show()
             }
         }
+
         button_start.setOnClickListener { startnavigation(ref_fragment) }
         button_stop.setOnClickListener {
-            /*     // it ->
+
+
+            /* *//*     // it ->
                 Log.d(TAG, "Stop clicked: before");
                 indoorwayPositionlistener = Action1 {
                     // store last position as a field
@@ -123,13 +165,30 @@ class NavigationHome : AppCompatActivity(), MapFragment.OnMapFragmentReadyListen
 
             IndoorwaySdk.instance().visitor().setup(visitor)*/
 
+
         }
+        indoorwayPositionlistener = Action1 {
+            // store last position as a field
+            Log.d(TAG, "Stop clicked : after");
+            Log.d(TAG, "indoorwayPositionlistener: ${Gson().toJson(it)}");
+
+            // react for position changes...
+
+            // If you are using map view, you can pass position.
+            // Second argument indicates if you want to auto reload map on position change
+            // for eg. after going to different building level.
+            ref_fragment?.mapView?.position?.setPosition(it, true)
+        }
+
         indoorLocationlistener = Action1 {
             // handle state changes
             when (it) {
-                IndoorwayLocationSdkState.STARTING -> Log.d("StateChange", "STARTING: location is starting")
+                IndoorwayLocationSdkState.STARTING -> {
+                    Log.d("StateChange", "STARTING: location is starting ${Gson().toJson(it)}")
+
+                }
                 IndoorwayLocationSdkState.DETERMINING_LOCATION -> Log.d("StateChange", "DETERMINING_LOCATION: ")
-                IndoorwayLocationSdkState.ERROR -> Log.d("StateChange", "ERROR: ")
+                IndoorwayLocationSdkState.ERROR -> Log.d("StateChange", "ERROR: ${Gson().toJson(it)}")
                 IndoorwayLocationSdkState.LOCATING_BACKGROUND -> Log.d("StateChange", "LOCATING_BACKGROUND: ")
                 IndoorwayLocationSdkState.LOCATING_FOREGROUND -> Log.d("StateChange", "LOCATING_FOREGROUND: ")
                 IndoorwayLocationSdkState.STOPPED -> Log.d("StateChange", "STOPPED: ")
@@ -199,9 +258,53 @@ class NavigationHome : AppCompatActivity(), MapFragment.OnMapFragmentReadyListen
     }
 
     private fun startnavigation(ref_fragment: MapFragment?) {
-        ref_fragment?.mapView?.navigation?.start("C4etnWJBuEg_6bb4a", "C4etnWJBuEg_b9ab8")
-        Log.d(TAG, "navigation Steps: ${ref_fragment?.mapView?.navigation?.getSteps()}")
+        val fm = fragmentManager
+        val dialogFragment = Object_Selection_fragment()
+        dialogFragment.show(fm, "Sample Fragment")
+        /*   IndoorwaySdk.instance()
+                   .map()
+                   .details(buildingUUID, mapUUID)
+                   .setOnCompletedListener(Action1 {
+                       var mapObjs: List<IndoorwayObjectParameters> = it.objects
+                       for (itb in mapObjs) {
+                           Log.d(TAG, "${itb.id} and ${itb.name}: ")
+                       }
+                       System.out.println("Buildling maps objects : ${Gson().toJson(it)}")
+                   }
 
+                   )
+
+
+                   .setOnFailedListener(Action1 {
+                       Log.d(TAG, "Building map objects Exception: ${it.message}")
+                   })
+                   .execute()*/
+        /*       IndoorwaySdk.instance()
+                       .building()
+                       .listMaps(buildingUUID)
+                       .setOnCompletedListener(Action1 {
+                           Log.d(TAG, "Buildling maps list : ${Gson().toJson(it)}")
+                       })
+                       .setOnFailedListener(Action1 {
+                           Log.d(TAG, "Building maplist Exception: ${it.message}")
+                       })
+                       .execute()*/
+
+        /*     ref_fragment?.mapView?.navigation?.start("C4etnWJBuEg_6bb4a", "C4etnWJBuEg_b9ab8")
+             Log.d(TAG, "navigation Steps: ${ref_fragment?.mapView?.navigation?.getSteps()}")
+     */
+        // ref_fragment?.mapView?.navigation?.start("C4etnWJBuEg_ecbd8", "C4etnWJBuEg_928a9")
+
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        IndoorwayLocationSdk.instance()
+                .position()
+                .onChange()
+                .register(indoorwayPositionlistener)
     }
 
     override fun onResume() {
@@ -250,19 +353,19 @@ class NavigationHome : AppCompatActivity(), MapFragment.OnMapFragmentReadyListen
                       )
               )*/
 
-            for (objname in mapObjects!!) {
-                val myLayer = ref_fragment?.mapView?.marker?.addLayer(7f)
-                myLayer!!.add(
-                        DrawableText(
-                                objname.id,
-                                Coordinates(objname.centerPoint.latitude, objname.centerPoint.longitude),
-                                objname.name!!,
-
-                                3f    // eg. 2f
-                        )
-                )
-
-            }
+            /*    for (objname in mapObjects!!) {
+                    val myLayer = ref_fragment?.mapView?.marker?.addLayer(7f)
+                    myLayer!!.add(
+                            DrawableText(
+                                    objname.id,
+                                    Coordinates(objname.centerPoint.latitude, objname.centerPoint.longitude),
+                                    objname.name!!,
+    
+                                    3f    // eg. 2f
+                            )
+                    )
+    
+                }*/
             Log.d(TAG, "Paths: ${Gson().toJson(paths)} and Mapobjects ${Gson().toJson(mapObjects)}")
         }
         fragment.mapView.onMapLoadFailedListener = Action0 {

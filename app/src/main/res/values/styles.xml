@@ -22,4 +22,13 @@
         <item name="android:windowExitAnimation">@anim/custom_anim_to_top</item>
     </style>
 
+    <style name="dialog_theme">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">false</item>
+    </style>
+
+    <style name="dialog_theme_full" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">false</item>
+    </style>
 </resources>
