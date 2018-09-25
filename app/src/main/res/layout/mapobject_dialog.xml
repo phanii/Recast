@@ -48,7 +48,7 @@
         android:paddingTop="2dp"
         android:paddingEnd="4dp"
         android:paddingBottom="2dp"
-        android:text="@string/navigate"
+        android:text="@string/jump_to_other_locaton"
         android:textColor="@color/indigo"
         android:textSize="24sp"
         android:textStyle="bold"
