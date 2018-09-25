@@ -7,12 +7,23 @@
     android:layout_height="match_parent"
     tools:context=".ChatScreen">
 
+    <ImageView
+
+        android:id="@+id/welcomeimage"
+        android:layout_width="match_parent"
+        android:layout_height="567dp"
+
+        android:contentDescription="TODO"
+        android:src="@drawable/welcome_bot"
+        app:layout_constraintBottom_toTopOf="@+id/view" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/reyclerview_message_list"
-        android:padding="4dp"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/white_lite"
+        android:padding="4dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/layout_chatbox"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -49,15 +60,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginEnd="4dp"
             android:layout_marginStart="16dp"
+            android:layout_marginEnd="4dp"
 
             android:layout_weight="3.5"
             android:background="@android:color/transparent"
             android:hint="@string/enter_message"
             android:maxLines="6"
 
-            />
+            android:autofillHints=""
+            android:inputType="" />
 
 
         <ImageView
@@ -67,6 +79,7 @@
             android:layout_weight="0.2"
 
             android:background="@android:color/transparent"
+            android:contentDescription="TODO"
             android:src="@android:drawable/ic_menu_send" />
 
         <android.support.v7.widget.SwitchCompat
@@ -74,8 +87,8 @@
             style="@style/switchcompactStyle"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginEnd="2dp"
             android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
             android:layout_weight="0.3"
 
             android:clickable="true"

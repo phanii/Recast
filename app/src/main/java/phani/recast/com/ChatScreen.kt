@@ -8,6 +8,7 @@ import android.speech.RecognizerIntent
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
+import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
 import com.google.gson.Gson
@@ -119,7 +120,8 @@ class ChatScreen : AppCompatActivity() {
     }
 
     private fun removeTyping() {
-
+        welcomeimage.visibility = View.GONE
+        reyclerview_message_list.visibility = View.VISIBLE
     }
 
     private fun sendmessagetoServer(chatMessage: String?) {

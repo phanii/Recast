@@ -20,6 +20,8 @@ import kotlinx.android.synthetic.main.fabmenu.*
 import kotlinx.android.synthetic.main.navigation_home.*
 import phani.recast.com.R
 import phani.recast.com.views.fragments.Object_Selection_fragment
+import phani.recast.com.webservices.Utilities.Values.buildingUUID
+import phani.recast.com.webservices.Utilities.Values.mapUUID
 
 class NavigationHome : AppCompatActivity(), MapFragment.OnMapFragmentReadyListener {
     override fun onMapFragmentReady(fragment: MapFragment) {
@@ -46,8 +48,8 @@ class NavigationHome : AppCompatActivity(), MapFragment.OnMapFragmentReadyListen
     }
 
     private var fabExpanded = false
-    var buildingUUID: String = "FqfSwbjQ3Lk"
-    var mapUUID: String = "C4etnWJBuEg"
+    /*var buildingUUID: String = "FqfSwbjQ3Lk"
+    var mapUUID: String = "C4etnWJBuEg"*/
     var paths: List<IndoorwayNode>? = null
     var ref_fragment: MapFragment? = null
 
