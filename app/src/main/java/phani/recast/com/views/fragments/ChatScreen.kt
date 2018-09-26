@@ -1,14 +1,16 @@
-package phani.recast.com
+package phani.recast.com.views.fragments
 
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.speech.RecognizerIntent
-import android.support.v7.app.AppCompatActivity
+import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
 import com.google.gson.Gson
@@ -19,6 +21,8 @@ import kotlinx.android.synthetic.main.activity_chat_screen.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import phani.recast.com.R
+import phani.recast.com.ShopDetails
 import phani.recast.com.adapters.ChatAdapter
 import phani.recast.com.modal.*
 import phani.recast.com.views.NavigationHome
@@ -30,13 +34,14 @@ import retrofit2.Response
 import java.util.*
 
 
-class ChatScreen : AppCompatActivity() {
+class ChatScreen : Fragment() {
     var list: ArrayList<String>? = null
     private val PACKAGE_NAME = "com.whatsapp"
 
     companion object {
         val TAG: String = ChatScreen::class.java.simpleName
         const val REQ_CODE = 100
+        fun newInstance(): ChatScreen = ChatScreen()
     }
 
     lateinit var content: Content
@@ -44,13 +49,73 @@ class ChatScreen : AppCompatActivity() {
     lateinit var arrayList: ArrayList<ChatMessageModal>
     lateinit var adapter: ChatAdapter
     lateinit var typingobj: ChatMessageModal
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_chat_screen)
+    /* override fun onCreate(savedInstanceState: Bundle?) {
+         super.onCreate(savedInstanceState)
+         setContentView(R.layout.activity_chat_screen)
+         arrayList = ArrayList()
+         list = ArrayList()
+         adapter = ChatAdapter(arrayList)
+         reyclerview_message_list.layoutManager = LinearLayoutManager(activity, LinearLayout.VERTICAL, false)
+         reyclerview_message_list.hasFixedSize()
+         typingobj = ChatMessageModal("text", "Typing", System.currentTimeMillis(), ChatMessageModal.Type.TYPING)
+         // arrayList.add(ChatMessageModal("text", "Say \' to start", System.currentTimeMillis(), ChatMessageModal.Type.RECEIVED))
+         reyclerview_message_list.adapter = adapter
+         switchchange.setOnCheckedChangeListener { _, isChecked ->
+             when (isChecked) {
+                 true -> {
+
+                     openMic()
+                 }
+                 false -> {
+                     button_chatbox_send.setOnClickListener {
+
+                         loadView(edittext_chatbox.text.toString())
+                     }
+                 }
+             }
+         }
+         button_chatbox_send.setOnClickListener {
+
+             if (edittext_chatbox.text.toString().contains("/WhatsApp", ignoreCase = true)) {
+
+                 if (packageInstalledOrNot(PACKAGE_NAME)) {
+                     //opens whats app dialog if it is installed on device
+                     shareMsgOnWhatsApp(edittext_chatbox.text.toString())
+                 } else {
+                     Toast.makeText(activity, "WhatsApp is not installed on your device", Toast.LENGTH_SHORT).show()
+                 }
+             } else {
+
+                 loadView(edittext_chatbox.text.toString())
+             }
+         }
+         IndoorwaySdk.instance()
+                 .buildings()
+                 .setOnCompletedListener(Action1 {
+                     Log.d(TAG, "Building List: ${Gson().toJson(it)}")
+                     Prefs.putString("street", it[0].street)
+                     Prefs.putString("mapname", it[0].maps[0].name)
+                     Prefs.putString("buildingUUID", it[0].uuid)
+                     Prefs.putString("mapUUID", it[0].maps[0].uuid)
+                     // handle buildings list
+                 })
+                 .setOnFailedListener(Action1 {
+                     // handle error, original exception is given on e.getCause()
+                 })
+                 .execute()
+
+     }*/
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.activity_chat_screen, container, false)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         arrayList = ArrayList()
         list = ArrayList()
         adapter = ChatAdapter(arrayList)
-        reyclerview_message_list.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
+        reyclerview_message_list.layoutManager = LinearLayoutManager(activity, LinearLayout.VERTICAL, false)
         reyclerview_message_list.hasFixedSize()
         typingobj = ChatMessageModal("text", "Typing", System.currentTimeMillis(), ChatMessageModal.Type.TYPING)
         // arrayList.add(ChatMessageModal("text", "Say \' to start", System.currentTimeMillis(), ChatMessageModal.Type.RECEIVED))
@@ -77,7 +142,7 @@ class ChatScreen : AppCompatActivity() {
                     //opens whats app dialog if it is installed on device
                     shareMsgOnWhatsApp(edittext_chatbox.text.toString())
                 } else {
-                    Toast.makeText(this, "WhatsApp is not installed on your device", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity, "WhatsApp is not installed on your device", Toast.LENGTH_SHORT).show()
                 }
             } else {
 
@@ -98,7 +163,6 @@ class ChatScreen : AppCompatActivity() {
                     // handle error, original exception is given on e.getCause()
                 })
                 .execute()
-
     }
 
 
@@ -191,13 +255,13 @@ class ChatScreen : AppCompatActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun openShopDetails(eventBusMessage: EventBusMessage) {
-        startActivity(Intent(this, ShopDetails::class.java))
+        startActivity(Intent(activity, ShopDetails::class.java))
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun openNavigationStoreMap(eventNavigate: EventNavigate) {
         Log.d(TAG, "EventNavigate: ${eventNavigate.navigate} Store Name ${eventNavigate.navigateToShowRoomName}")
-        startActivity(Intent(this, NavigationHome::class.java))
+        startActivity(Intent(activity, NavigationHome::class.java))
     }
 
     private fun openMic() {
@@ -208,7 +272,7 @@ class ChatScreen : AppCompatActivity() {
         try {
             startActivityForResult(intent, REQ_CODE)
         } catch (e: Exception) {
-            Toast.makeText(this, getString(R.string.speachnotsupported), Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity, getString(R.string.speachnotsupported), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -240,10 +304,10 @@ class ChatScreen : AppCompatActivity() {
 
     //method checks for passed package install or not
     private fun packageInstalledOrNot(packageName: String): Boolean {
-        val packageManager = this.packageManager
+        val packageManager = activity?.packageManager
         val isInstalled: Boolean
         isInstalled = try {
-            packageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES)
+            packageManager?.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES)
             true
         } catch (e: PackageManager.NameNotFoundException) {
             false
@@ -266,14 +330,14 @@ class ChatScreen : AppCompatActivity() {
         EventBus.getDefault().unregister(this)
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState?.putSerializable("chathistory", arrayList)
+        outState.putSerializable("chathistory", arrayList)
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
-        super.onRestoreInstanceState(savedInstanceState)
-        arrayList = savedInstanceState?.getSerializable("chathistory") as ArrayList<ChatMessageModal>
-    }
+    /*  fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+          super.onRestoreInstanceState(savedInstanceState)
+          arrayList = savedInstanceState?.getSerializable("chathistory") as ArrayList<ChatMessageModal>
+      }*/
 
 }

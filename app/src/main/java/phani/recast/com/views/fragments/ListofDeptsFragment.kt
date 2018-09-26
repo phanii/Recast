@@ -1,7 +1,7 @@
 package phani.recast.com.views.fragments
 
-import android.app.DialogFragment
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.LayoutInflater
@@ -20,7 +20,7 @@ import phani.recast.com.views.NavigationHome.Companion.TAG
 import phani.recast.com.webservices.Utilities.Values.buildingUUID
 import phani.recast.com.webservices.Utilities.Values.mapUUID
 
-class Object_Selection_fragment : DialogFragment() {
+class ListofDeptsFragment : Fragment() {
 
     lateinit var objAdapter: Navigate_to_place_Adapter
     lateinit var objlist: ArrayList<Navigation_obj_and_obj_id>
@@ -28,27 +28,19 @@ class Object_Selection_fragment : DialogFragment() {
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         var view = inflater.inflate(R.layout.mapobject_dialog, container, false)
-        dialog.setTitle("Simple Dialog")
+
         return view
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setStyle(STYLE_NORMAL, R.style.dialog_theme_full)
-
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        btn_cancle.setOnClickListener {
-            dismiss()
-        }
+        btn_cancle.visibility = View.GONE
         objlist = arrayListOf()
         objlist.clear()
-        last_location.text = Prefs.getString("recentLocation", "Not Available")
+        last_location.text = "Recent Location is @ ${Prefs.getString("recentLocation", "Not Available")}"
         objAdapter = Navigate_to_place_Adapter(objlist)
         obj_recyclerView.hasFixedSize()
-        obj_recyclerView.layoutManager = LinearLayoutManager(activity.applicationContext, LinearLayoutManager.VERTICAL, false)
+        obj_recyclerView.layoutManager = LinearLayoutManager(activity?.applicationContext, LinearLayoutManager.VERTICAL, false)
         obj_recyclerView.adapter = objAdapter
         loadobjects()
     }
@@ -76,18 +68,8 @@ class Object_Selection_fragment : DialogFragment() {
                 .execute()
     }
 
-    override fun onStart() {
-        super.onStart()
-        val d = dialog
-        if (d != null) {
-            val width = ViewGroup.LayoutParams.MATCH_PARENT
-            val height = ViewGroup.LayoutParams.MATCH_PARENT
-            d.window.setLayout(width, height)
-        }
-    }
-
     companion object {
-        fun newInstance(): Object_Selection_fragment = Object_Selection_fragment()
+        fun newInstance(): ListofDeptsFragment = ListofDeptsFragment()
     }
 
 }

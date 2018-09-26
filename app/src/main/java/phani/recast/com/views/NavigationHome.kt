@@ -1,6 +1,7 @@
 package phani.recast.com.views
 
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
@@ -19,7 +20,7 @@ import com.pixplicity.easyprefs.library.Prefs
 import kotlinx.android.synthetic.main.fabmenu.*
 import kotlinx.android.synthetic.main.navigation_home.*
 import phani.recast.com.R
-import phani.recast.com.views.fragments.Object_Selection_fragment
+import phani.recast.com.views.fragments.ListofDeptsFragment
 import phani.recast.com.webservices.Utilities.Values.buildingUUID
 import phani.recast.com.webservices.Utilities.Values.mapUUID
 
@@ -171,8 +172,8 @@ class NavigationHome : AppCompatActivity(), MapFragment.OnMapFragmentReadyListen
         }
         indoorwayPositionlistener = Action1 {
             // store last position as a field
-            Log.d(TAG, "Stop clicked : after");
-            Log.d(TAG, "indoorwayPositionlistener: ${Gson().toJson(it)}");
+            Log.d(TAG, "Stop clicked : after")
+            Log.d(TAG, "indoorwayPositionlistener: ${Gson().toJson(it)}")
 
             // react for position changes...
 
@@ -260,9 +261,11 @@ class NavigationHome : AppCompatActivity(), MapFragment.OnMapFragmentReadyListen
     }
 
     private fun startnavigation(ref_fragment: MapFragment?) {
-        val fm = fragmentManager
-        val dialogFragment = Object_Selection_fragment()
-        dialogFragment.show(fm, "Sample Fragment")
+        mainla.visibility = View.GONE
+        fragment_frame.visibility = View.VISIBLE
+        val dialogFragment = ListofDeptsFragment.newInstance()
+        openFragment(dialogFragment)
+        //    dialogFragment.show(fm, "Sample Fragment")
         /*   IndoorwaySdk.instance()
                    .map()
                    .details(buildingUUID, mapUUID)
@@ -300,6 +303,13 @@ class NavigationHome : AppCompatActivity(), MapFragment.OnMapFragmentReadyListen
 
     }
 
+    private fun openFragment(fragment: Fragment) {
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragment_frame, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
+    }
+
     override fun onStart() {
         super.onStart()
 
@@ -311,6 +321,8 @@ class NavigationHome : AppCompatActivity(), MapFragment.OnMapFragmentReadyListen
 
     override fun onResume() {
         super.onResume()
+        fragment_frame.visibility = View.GONE
+        mainla.visibility = View.VISIBLE
         IndoorwayLocationSdk.instance()
                 .state()
                 .onChange()
