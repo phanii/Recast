@@ -63,6 +63,7 @@ dependencies {
 // optional if you don't want to use fragments
     implementation 'com.indoorway.android:fragments:2.0.25'
     implementation 'com.pixplicity.easyprefs:library:1.9.0'
+    implementation 'com.github.d-max:spots-dialog:1.1@aar'
 }
 repositories {
     mavenCentral()

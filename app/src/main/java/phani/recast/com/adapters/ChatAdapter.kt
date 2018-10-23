@@ -91,9 +91,10 @@ class ChatAdapter(val chatmessages: ArrayList<ChatMessageModal>) : Adapter<Recyc
 
 
 class ReceivedMessageHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
+
     fun binditem(chatMessageModal: ChatMessageModal) {
         typinganim?.cancel()
-        Log.d(TAG, "Message Type : ${chatMessageModal.type}")
+        Log.d(TAG, "Message Type *********: ${chatMessageModal.type}")
         when (chatMessageModal.type) {
             itemView.context.getString(R.string.type_text) -> {
                 itemView.layout_generalresponse.visibility = View.VISIBLE
@@ -144,6 +145,7 @@ class ReceivedMessageHolder(itemView: View?) : RecyclerView.ViewHolder(itemView)
                 itemView.child_bot_recv.adapter = q
             }
             itemView.context.getString(R.string.list) -> {
+                Log.d(TAG, "List called from adapter: ")
                 itemView.layout_generalresponse.visibility = View.GONE
                 itemView.quickreply_layout.visibility = View.GONE
                 itemView.layout_picture.visibility = View.GONE

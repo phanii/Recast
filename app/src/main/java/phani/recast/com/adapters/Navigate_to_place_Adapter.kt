@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import kotlinx.android.synthetic.main.navigate_to_particularplace_row.view.*
 import phani.recast.com.R
 import phani.recast.com.modal.Navigation_obj_and_obj_id
@@ -31,6 +32,7 @@ class Navigate_to_place_Adapter(val navobjlist: ArrayList<Navigation_obj_and_obj
         holder.binding(ele)
         holder.itemView.setOnClickListener {
             Log.d(TAG, ":${ele.navobj_id} -----> ${ele.navobj_name} ")
+            Toast.makeText(holder.itemView.context, "You Clicked ${ele.navobj_name}", Toast.LENGTH_SHORT).show()
         }
     }
 

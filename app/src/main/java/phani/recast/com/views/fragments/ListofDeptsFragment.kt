@@ -1,5 +1,6 @@
 package phani.recast.com.views.fragments
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -12,6 +13,7 @@ import com.indoorway.android.common.sdk.IndoorwaySdk
 import com.indoorway.android.common.sdk.listeners.generic.Action1
 import com.indoorway.android.common.sdk.model.IndoorwayObjectParameters
 import com.pixplicity.easyprefs.library.Prefs
+import dmax.dialog.SpotsDialog
 import kotlinx.android.synthetic.main.mapobject_dialog.*
 import phani.recast.com.R
 import phani.recast.com.adapters.Navigate_to_place_Adapter
@@ -24,6 +26,7 @@ class ListofDeptsFragment : Fragment() {
 
     lateinit var objAdapter: Navigate_to_place_Adapter
     lateinit var objlist: ArrayList<Navigation_obj_and_obj_id>
+    var dialog: AlertDialog? = null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -39,6 +42,8 @@ class ListofDeptsFragment : Fragment() {
         objlist.clear()
         last_location.text = "Recent Location is @ ${Prefs.getString("recentLocation", "Not Available")}"
         objAdapter = Navigate_to_place_Adapter(objlist)
+        dialog = SpotsDialog.Builder().setContext(activity).build()
+
         obj_recyclerView.hasFixedSize()
         obj_recyclerView.layoutManager = LinearLayoutManager(activity?.applicationContext, LinearLayoutManager.VERTICAL, false)
         obj_recyclerView.adapter = objAdapter
@@ -46,6 +51,7 @@ class ListofDeptsFragment : Fragment() {
     }
 
     private fun loadobjects() {
+        dialog?.show()
         IndoorwaySdk.instance()
                 .map()
                 .details(buildingUUID, mapUUID)
@@ -57,6 +63,7 @@ class ListofDeptsFragment : Fragment() {
                     }
                     System.out.println("Buildling maps objects : ${Gson().toJson(it)}")
                     objAdapter.notifyDataSetChanged()
+                    dialog?.dismiss()
                 }
 
                 )
@@ -64,6 +71,7 @@ class ListofDeptsFragment : Fragment() {
 
                 .setOnFailedListener(Action1 {
                     Log.d(TAG, "Building map objects Exception: ${it.message}")
+                    dialog?.dismiss()
                 })
                 .execute()
     }

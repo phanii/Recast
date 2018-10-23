@@ -1,11 +1,13 @@
 package phani.recast.com.views.fragments
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.support.v4.app.Fragment
+
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,6 +19,7 @@ import com.google.gson.Gson
 import com.indoorway.android.common.sdk.IndoorwaySdk
 import com.indoorway.android.common.sdk.listeners.generic.Action1
 import com.pixplicity.easyprefs.library.Prefs
+import dmax.dialog.SpotsDialog
 import kotlinx.android.synthetic.main.activity_chat_screen.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -37,6 +40,8 @@ import java.util.*
 class ChatScreen : Fragment() {
     var list: ArrayList<String>? = null
     private val PACKAGE_NAME = "com.whatsapp"
+
+    var dialog: AlertDialog? = null
 
     companion object {
         val TAG: String = ChatScreen::class.java.simpleName
@@ -114,6 +119,7 @@ class ChatScreen : Fragment() {
         super.onActivityCreated(savedInstanceState)
         arrayList = ArrayList()
         list = ArrayList()
+        arrayList.clear()
         adapter = ChatAdapter(arrayList)
         reyclerview_message_list.layoutManager = LinearLayoutManager(activity, LinearLayout.VERTICAL, false)
         reyclerview_message_list.hasFixedSize()
@@ -163,6 +169,8 @@ class ChatScreen : Fragment() {
                     // handle error, original exception is given on e.getCause()
                 })
                 .execute()
+
+        dialog = SpotsDialog.Builder().setContext(context).build()
     }
 
 
@@ -175,11 +183,11 @@ class ChatScreen : Fragment() {
 
     private fun loadView(input: String) {
         arrayList.add(ChatMessageModal("text", input, System.currentTimeMillis(), ChatMessageModal.Type.SENT))
-        adapter.notifyDataSetChanged()
         arrayList.add(typingobj)
 
         sendmessagetoServer(input)
         removeTyping()
+        adapter.notifyDataSetChanged()
         edittext_chatbox.setText("")
     }
 
@@ -189,7 +197,7 @@ class ChatScreen : Fragment() {
     }
 
     private fun sendmessagetoServer(chatMessage: String?) {
-
+        dialog?.show()
         val apiservice = ApiBuilder.create()
 
         val call_dialog = apiservice.getRequestData("Token ${Utilities.token}", Date().time, InputMessage(Keyboardmessagge("text", chatMessage!!)))
@@ -202,33 +210,38 @@ class ChatScreen : Fragment() {
 
             override fun onResponse(call: Call<Dialog>?, response: Response<Dialog>?) {
                 if (response!!.isSuccessful) {
-                    messageResults = response.body()?.results?.messages as ArrayList<Message>?
-                    for (message: Message in messageResults!!) {
-                        arrayList.remove(typingobj)
-                        Log.d(TAG, "Message Type: ${message.type}")
-                        when (message.type) {
-                            getString(R.string.type_text) -> {
-                                Log.d(TAG, "Inside : ${message.type}")
-                                arrayList.add(ChatMessageModal(getString(R.string.type_text), message.content!!, System.currentTimeMillis(), ChatMessageModal.Type.RECEIVED))
+                    try {
+                        messageResults = response.body()?.results?.messages as ArrayList<Message>?
+                        for (message: Message in messageResults!!) {
+                            arrayList.remove(typingobj)
+                            Log.d(TAG, "Message Type: ${message.type}")
+                            when (message.type) {
+                                getString(R.string.type_text) -> {
+                                    Log.d(TAG, "Inside : ${message.type}")
+                                    arrayList.add(ChatMessageModal(getString(R.string.type_text), message.content!!, System.currentTimeMillis(), ChatMessageModal.Type.RECEIVED))
+                                }
+                                getString(R.string.quickReplies) -> {
+                                    Log.d(TAG, "Inside : ${message.type}")
+                                    val str = Gson().toJson(message.content)
+                                    content = Gson().fromJson(str, Content::class.java)
+                                    Log.d(TAG, "Content: " + content.title)
+                                    Log.d(TAG, "content info : ${Gson().toJson(content)}")
+                                    Log.d(TAG, "content str : $str")
+                                    arrayList.add(ChatMessageModal(getString(R.string.quickReplies), message.content!!, System.currentTimeMillis(), ChatMessageModal.Type.RECEIVED))
+                                }
+                                getString(R.string.picture) -> {
+                                    arrayList.add(ChatMessageModal(getString(R.string.picture), message.content!!, System.currentTimeMillis(), ChatMessageModal.Type.RECEIVED))
+                                }
+                                getString(R.string.list) -> {
+                                    Log.d(TAG, "message list: ${Gson().toJson(message.content)}")
+                                    arrayList.add(ChatMessageModal(getString(R.string.list), message.content!!, System.currentTimeMillis(), ChatMessageModal.Type.RECEIVED))
+                                    Log.d(TAG, "message list size is : ${arrayList.size}")
+                                }
                             }
-                            getString(R.string.quickReplies) -> {
-                                Log.d(TAG, "Inside : ${message.type}")
-                                val str = Gson().toJson(message.content)
-                                content = Gson().fromJson(str, Content::class.java)
-                                Log.d(TAG, "Content: " + content.title)
-                                Log.d(TAG, "content info : ${Gson().toJson(content)}")
-                                Log.d(TAG, "content str : $str")
-                                arrayList.add(ChatMessageModal(getString(R.string.quickReplies), message.content!!, System.currentTimeMillis(), ChatMessageModal.Type.RECEIVED))
-                            }
-                            getString(R.string.picture) -> {
-                                arrayList.add(ChatMessageModal(getString(R.string.picture), message.content!!, System.currentTimeMillis(), ChatMessageModal.Type.RECEIVED))
-                            }
-                            getString(R.string.list) -> {
-                                arrayList.add(ChatMessageModal(getString(R.string.list), message.content!!, System.currentTimeMillis(), ChatMessageModal.Type.RECEIVED))
-
-                            }
+                            adapter.notifyDataSetChanged()
                         }
-                        adapter.notifyDataSetChanged()
+                    } catch (e: Exception) {
+                        Toast.makeText(activity, "Try Again!!", Toast.LENGTH_SHORT).show()
                     }
                 } else {
                     Log.d(TAG, "onResponse Error: ")
@@ -237,7 +250,7 @@ class ChatScreen : Fragment() {
             }
 
         })
-
+        dialog?.dismiss()
 
     }
 
