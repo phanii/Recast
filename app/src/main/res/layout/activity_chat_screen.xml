@@ -5,14 +5,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ChatScreen">
+    tools:context=".views.fragments.ChatScreen">
+
+    <!-- <include
+         android:id="@+id/include2"
+         layout="@layout/bot_toolbar" />-->
+
+    <ImageView
+
+        android:id="@+id/welcomeimage"
+        android:layout_width="match_parent"
+        android:layout_height="571dp"
+        android:layout_marginTop="8dp"
+        android:contentDescription="TODO"
+        android:src="@drawable/welcome_bot"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/reyclerview_message_list"
-        android:padding="4dp"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         android:background="@color/white_lite"
+        android:padding="4dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/layout_chatbox"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -34,9 +53,11 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="1dp"
         android:layout_marginRight="1dp"
+        android:layout_marginBottom="55dp"
         android:background="#ffffff"
         android:minHeight="48dp"
         android:orientation="horizontal"
+
         android:weightSum="4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -49,15 +70,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginEnd="4dp"
             android:layout_marginStart="16dp"
+            android:layout_marginEnd="4dp"
 
             android:layout_weight="3.5"
+            android:autofillHints=""
             android:background="@android:color/transparent"
             android:hint="@string/enter_message"
-            android:maxLines="6"
 
-            />
+            android:inputType=""
+            android:maxLines="6" />
 
 
         <ImageView
@@ -67,6 +89,7 @@
             android:layout_weight="0.2"
 
             android:background="@android:color/transparent"
+            android:contentDescription="TODO"
             android:src="@android:drawable/ic_menu_send" />
 
         <android.support.v7.widget.SwitchCompat
@@ -74,8 +97,8 @@
             style="@style/switchcompactStyle"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginEnd="2dp"
             android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
             android:layout_weight="0.3"
 
             android:clickable="true"

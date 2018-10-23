@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_products"
+        android:icon="@drawable/products"
+        android:title="@string/products" />
+
+    <item
+        android:id="@+id/navigation_bot"
+        android:icon="@drawable/bot_board"
+        android:title="@string/bot" />
+
+    <item
+        android:id="@+id/navigation_departmentslist"
+        android:icon="@drawable/list_board"
+        android:title="@string/departments" />
+
+</menu>
